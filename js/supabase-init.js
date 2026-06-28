@@ -1,0 +1,4 @@
+const SUPABASE_URL = "https://lcdfoakjfqqknhbfxzpw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxjZGZvYWtqZnFxa25oYmZ4enB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzOTY2NzMsImV4cCI6MjA5Njk3MjY3M30.9XmoENK3J17H3moGauSbZvmBvJOr3JqFzMZXPZppKKo";
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
