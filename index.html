@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tiger Rewards">
+<link rel="apple-touch-icon" href="monogram.png">
+<title>Tiger Rewards</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1d2740">
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- PWA Install Banner -->
+<div id="pwa-install-banner" class="pwa-banner hidden">
+  <div class="pwa-banner-content">
+    <img src="monogram.png" class="pwa-icon" alt="TR">
+    <div>
+      <div class="pwa-banner-title">Install Tiger Rewards</div>
+      <div class="pwa-banner-sub">Add to home screen for best experience</div>
+    </div>
+  </div>
+  <div class="pwa-banner-actions">
+    <button class="pwa-install-btn" id="pwa-install-btn">Install</button>
+    <button class="pwa-dismiss-btn" onclick="dismissPWA()">✕</button>
+  </div>
+</div>
+
+<!-- AI Assistant -->
+<div id="assistant-fab" class="assistant-fab hidden" onclick="toggleAssistant()">
+  <svg viewBox="0 0 24 24" class="fab-icon"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+  <div class="fab-label">TigerBot</div>
+</div>
+
+<div id="assistant-panel" class="assistant-panel hidden">
+  <div class="assistant-header">
+    <div class="assistant-title">
+      <img src="monogram.png" class="assistant-logo" alt="TR">
+      <div>
+        <div class="assistant-name">TigerBot 🐯</div>
+        <div class="assistant-status">Platform Assistant</div>
+      </div>
+    </div>
+    <button class="assistant-close" onclick="toggleAssistant()">✕</button>
+  </div>
+  <div id="assistant-messages" class="assistant-messages">
+    <div class="bot-message">
+      <div class="bot-bubble">Hi! I'm TigerBot 🐯 I can help you with anything on Tiger Rewards. What would you like to know?</div>
+    </div>
+    <div class="quick-replies" id="assistant-quick-replies">
+      <button class="quick-reply" onclick="askBot('How do I withdraw?')">💸 Withdraw</button>
+      <button class="quick-reply" onclick="askBot('How does referral work?')">🔗 Referral</button>
+      <button class="quick-reply" onclick="askBot('How to earn?')">💰 Earn</button>
+      <button class="quick-reply" onclick="askBot('How do games work?')">🎮 Games</button>
+      <button class="quick-reply" onclick="askBot('What is Lucky Draw?')">🎫 Draw</button>
+      <button class="quick-reply" onclick="askBot('How to deposit?')">📥 Deposit</button>
+    </div>
+  </div>
+  <div class="assistant-input-row">
+    <input type="text" id="assistant-input" placeholder="Ask anything..." maxlength="200"
+      onkeydown="if(event.key==='Enter')sendAssistantMessage()">
+    <button class="assistant-send-btn" onclick="sendAssistantMessage()">
+      <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ===== SPLASH ===== -->
+<div id="splash-screen" class="splash-screen">
+  <img src="monogram.png" class="logo-img" alt="Tiger Rewards">
+  <h1 class="brand-title">TIGER REWARDS</h1>
+</div>
+
+<!-- ===== AD ZONES (AUTH) ===== -->
+<div id="ad-auth-top" class="ad-zone hidden"></div>
+
+<!-- ===== AUTH ===== -->
+<div id="auth-container" class="auth-container hidden">
+
+  <!-- SIGN IN -->
+  <div id="signin-screen" class="auth-screen active">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="monogram.png" class="logo-img-sm" alt="Tiger Rewards">
+        <h1 class="brand-title">TIGER REWARDS</h1>
+      </div>
+      <button class="auth-stats-btn" onclick="showStatsFromAuth()">
+  <span class="auth-stats-pulse"></span>
+  📊 See why users trust Tiger Rewards
+</button>
+      <form id="signin-form" class="auth-form">
+        <div class="input-group">
+          <label for="signin-email">Email Address</label>
+          <input type="email" id="signin-email" placeholder="you@example.com" required>
+        </div>
+        <div class="input-group">
+          <label for="signin-password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="signin-password" placeholder="••••••••" required>
+            <button type="button" class="eye-btn" onclick="togglePassword('signin-password', this)">
+              <svg class="icon-eye" viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 4.2A10.4 10.4 0 0112 4c7 0 10 7 10 7a13.2 13.2 0 01-2.3 3.3M6.1 6.1A13.4 13.4 0 002 12s3 7 10 7a10.6 10.6 0 003.9-.7"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" id="signin-btn">
+          <span class="btn-text">Sign In</span>
+          <span class="btn-spinner"></span>
+        </button>
+      </form>
+      <p class="auth-switch">Don't have an account? <a href="javascript:void(0)" onclick="switchScreen('register')">Register</a></p>
+      <div class="auth-legal-links">
+        <a href="javascript:void(0)" onclick="showLegalPage('privacy')">Privacy Policy</a>
+        <span>•</span>
+        <a href="javascript:void(0)" onclick="showLegalPage('terms')">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- REGISTER -->
+  <div id="register-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">
+        <img src="monogram.png" class="logo-img-sm" alt="Tiger Rewards">
+        <h1 class="brand-title">TIGER REWARDS</h1>
+      </div>
+      <p class="auth-warning">Please remember your password and email otherwise you can't recover your account.</p>
+      <form id="register-form" class="auth-form">
+        <div class="input-group">
+          <label for="register-username">Username</label>
+          <input type="text" id="register-username" placeholder="Choose a username" required minlength="3" maxlength="20">
+        </div>
+        <div class="input-group">
+          <label for="register-email">Email Address</label>
+          <input type="email" id="register-email" placeholder="you@example.com" required>
+        </div>
+        <div class="input-group">
+          <label for="register-password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="register-password" placeholder="••••••••" required minlength="6">
+            <button type="button" class="eye-btn" onclick="togglePassword('register-password', this)">
+              <svg class="icon-eye" viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 4.2A10.4 10.4 0 0112 4c7 0 10 7 10 7a13.2 13.2 0 01-2.3 3.3M6.1 6.1A13.4 13.4 0 002 12s3 7 10 7a10.6 10.6 0 003.9-.7"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label for="register-confirm">Confirm Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="register-confirm" placeholder="••••••••" required minlength="6">
+            <button type="button" class="eye-btn" onclick="togglePassword('register-confirm', this)">
+              <svg class="icon-eye" viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 11a4 4 0 110-8 4 4 0 010 8z"/></svg>
+              <svg class="icon-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 4.2A10.4 10.4 0 0112 4c7 0 10 7 10 7a13.2 13.2 0 01-2.3 3.3M6.1 6.1A13.4 13.4 0 002 12s3 7 10 7a10.6 10.6 0 003.9-.7"/></svg>
+            </button>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" id="register-btn">
+          <span class="btn-text">Register</span>
+          <span class="btn-spinner"></span>
+        </button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="javascript:void(0)" onclick="switchScreen('signin')">Sign In</a></p>
+      <div class="auth-legal-links">
+        <a href="javascript:void(0)" onclick="showLegalPage('privacy')">Privacy Policy</a>
+        <span>•</span>
+        <a href="javascript:void(0)" onclick="showLegalPage('terms')">Terms & Conditions</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div id="ad-auth-bottom" class="ad-zone hidden"></div>
+
+<!-- ===== SUSPENSION SCREEN ===== -->
+<div id="suspension-screen" class="suspension-screen hidden">
+  <div class="suspension-card">
+    <img src="monogram.png" class="logo-img-sm" alt="Tiger Rewards">
+    <h1 class="brand-title" style="margin-bottom:4px;font-size:16px;letter-spacing:3px;">TIGER REWARDS</h1>
+    <div id="suspension-icon" class="suspension-badge">🚫</div>
+    <h2 id="suspension-title" class="suspension-title">Account Suspended</h2>
+    <div class="suspension-uid-row">
+      <span id="suspension-uid" class="suspension-uid"></span>
+    </div>
+    <div class="suspension-detail">
+      <span class="suspension-label">Reason</span>
+      <span id="suspension-reason" class="suspension-reason"></span>
+    </div>
+    <div class="suspension-detail">
+      <span class="suspension-label">Date</span>
+      <span id="suspension-date"></span>
+    </div>
+    <div id="suspension-timer-wrap" class="suspension-timer-wrap">
+      <span class="suspension-label">Remaining</span>
+      <span id="suspension-timer" class="suspension-timer">--</span>
+    </div>
+    <div id="suspension-permanent" class="suspension-permanent hidden">
+      <span class="status-badge status-rejected">Permanent</span>
+    </div>
+    <div id="suspension-ticket-wrap" class="hidden">
+      <h3 class="section-subtitle" style="margin-top:16px;text-align:left;">Submit Appeal Ticket</h3>
+      <div class="auth-form">
+        <div class="input-group">
+          <label>Subject</label>
+          <input type="text" id="sus-ticket-subject" value="Account Appeal" required>
+        </div>
+        <div class="input-group">
+          <label>Message</label>
+          <textarea id="sus-ticket-message" rows="3" placeholder="Explain your situation..." required></textarea>
+        </div>
+        <button class="btn-primary" id="sus-ticket-btn" onclick="submitSuspensionTicket()">
+          <span class="btn-text">Submit Appeal</span><span class="btn-spinner"></span>
+        </button>
+      </div>
+    </div>
+    <button class="support-item" onclick="toggleSuspensionTicket()" style="margin-top:16px;width:100%;justify-content:center;">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M12 12v4"/></svg>
+      <span>Contact Support / Appeal</span>
+    </button>
+    <div id="sus-recent-mails" style="width:100%;margin-top:8px;"></div>
+    <button class="btn-primary" onclick="logoutFromSuspension()" style="margin-top:10px;background:var(--bg-secondary);color:var(--text-secondary);">
+      <span class="btn-text">Sign Out</span><span class="btn-spinner"></span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== GIFT MODAL ===== -->
+<div id="gift-modal" class="modal hidden">
+  <div class="modal-card">
+    <h3 class="modal-title">Send Gift 🎁</h3>
+    <form id="gift-form" class="auth-form">
+      <div class="input-group"><label>Recipient UID</label><input type="text" id="gift-uid" placeholder="TGR123456" required></div>
+      <div class="input-group"><label>Amount (USDT)</label><input type="number" id="gift-amount" step="0.01" min="0.01" required></div>
+      <div class="input-group"><label>Message (optional)</label><input type="text" id="gift-message" placeholder="Great work! 🎉" maxlength="100"></div>
+      <div class="preview-box" id="gift-preview">Fee: 0.00 USDT | Recipient gets: 0.00 USDT</div>
+      <div class="modal-actions">
+        <button type="button" class="btn-reject" onclick="closeGiftModal()">Cancel</button>
+        <button type="submit" class="btn-approve" id="gift-submit-btn">Send Gift</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div id="app-container" class="hidden">
+
+  <div id="announcement-banner" class="announcement-banner hidden">
+    <span id="banner-text"></span>
+  </div>
+
+  <!-- HEADER -->
+  <header class="app-header">
+    <div class="header-left">
+      <img src="monogram.png" class="header-logo-img" alt="TR">
+      <span class="header-title">TIGER REWARDS</span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" onclick="openPage('mailbox')">
+        <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+        <span id="mailbox-badge" class="icon-badge hidden">0</span>
+      </button>
+      <button class="icon-btn" onclick="toggleMenu()">
+        <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div id="menu-dropdown" class="menu-dropdown hidden">
+         <button class="menu-item" onclick="openPage('stats'); toggleMenu()">
+  <svg class="icon" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 4-6"/></svg>
+  Statistics
+</button>
+        <button class="menu-item" onclick="logoutUser()">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main id="page-content" class="page-content">
+
+    <!-- PROFILE -->
+    <div id="page-profile" class="page">
+      <div class="profile-card">
+        <div class="avatar-circle">
+          <img src="avatar.png" alt="avatar" class="avatar-img">
+        </div>
+        <h2 id="profile-username" class="profile-username">—</h2>
+        <div class="profile-uid-row">
+          <span id="profile-uid">UID: —</span>
+          <button class="copy-btn" onclick="copyToClipboard(currentUserProfile ? currentUserProfile.uid : '', 'UID Copied')">
+            <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+
+        <!-- Bio section -->
+        <div id="bio-display" class="bio-display" onclick="openBioEdit()">
+          <span id="bio-text" class="bio-text">Tap to add bio...</span>
+          <svg class="icon bio-edit-icon" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div id="bio-edit-section" class="hidden">
+          <textarea id="bio-input" maxlength="120" placeholder="Write something about yourself..." class="bio-textarea" rows="2"></textarea>
+          <div class="bio-actions">
+            <button class="btn-reject" onclick="cancelBioEdit()">Cancel</button>
+            <button class="btn-approve" id="bio-save-btn" onclick="saveBio()">Save</button>
+          </div>
+          <div id="bio-char-count" class="bio-char-count">0/120</div>
+        </div>
+
+        <div class="balance-box">
+          <span class="balance-label">Total Account Balance</span>
+          <span id="profile-balance" class="balance-value">0.00 USDT</span>
+        </div>
+        <div class="vip-badge" id="profile-vip">Bronze Member</div>
+      </div>
+
+         <!-- Profile Stats -->
+      <div class="profile-stats-row">
+        <div class="profile-stat-card">
+          <span id="stat-total-earned" class="stat-value">0.00</span>
+          <span class="stat-label">Total Earned</span>
+        </div>
+        <div class="profile-stat-card">
+          <span id="stat-referrals" class="stat-value">0</span>
+          <span class="stat-label">Referrals</span>
+        </div>
+        <div class="profile-stat-card">
+          <span id="stat-streak" class="stat-value">0</span>
+          <span class="stat-label">Day Streak</span>
+        </div>
+        <div class="profile-stat-card">
+          <span id="stat-tasks" class="stat-value">0</span>
+          <span class="stat-label">Tasks Done</span>
+        </div>
+      </div>
+
+          <!-- Earning Analytics -->
+      <div class="analytics-card-section">
+        <div class="analytics-header-row">
+          <h3 class="section-subtitle" style="margin:0;">7-Day Earnings</h3>
+          <span id="analytics-total" class="analytics-total-badge">0.00 USDT</span>
+        </div>
+        <div id="earning-chart" class="earning-chart">
+          <div class="chart-loading">Loading...</div>
+        </div>
+      </div>
+
+      <div class="checkin-card">
+        <div class="checkin-info">
+          <span class="checkin-label">Daily Check-in</span>
+          <span id="checkin-streak" class="checkin-streak">Streak: 0 days</span>
+        </div>
+        <button class="btn-checkin" id="checkin-btn" onclick="claimDailyCheckin()">
+          <span class="btn-text">Claim</span><span class="btn-spinner"></span>
+        </button>
+      </div>
+      <h3 class="section-subtitle">Achievements</h3>
+      <div id="achievements-list" class="badges-grid"></div>
+      <h3 class="section-subtitle">Daily Spin Wheel</h3>
+      <div id="spin-wheel-grid" class="spin-grid"></div>
+      <button class="btn-primary" id="spin-btn" onclick="spinWheel()">
+        <span class="btn-text">Spin Now</span><span class="btn-spinner"></span>
+      </button>
+
+      <div id="ad-profile-bottom" class="ad-zone"></div>
+
+    </div>
+
+    <!-- EARN -->
+    <div id="page-earn" class="page hidden">
+      <h2 class="page-title">Earn</h2>
+      <div id="ad-earn-top" class="ad-zone"></div>
+      <div id="earn-content"></div>
+      <h3 class="section-subtitle" style="margin-top:16px;">Recent Earnings</h3>
+      <div id="offer-history-list" class="mail-list"></div>
+    </div>
+
+    <!-- TASKS -->
+    <div id="page-tasks" class="page hidden">
+      <h2 class="page-title">Task Board</h2>
+      <div id="tasks-list" class="mail-list"></div>
+      <div id="task-submit-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 id="modal-task-title" class="modal-title"></h3>
+          <p id="modal-task-desc" class="modal-desc"></p>
+          <p id="modal-task-proof-inst" class="modal-proof-inst"></p>
+          <div class="input-group">
+            <label>Proof (URL/link)</label>
+            <input type="text" id="modal-proof-url" placeholder="https://...">
+          </div>
+          <div class="input-group">
+            <label>Additional Info / Proof Text</label>
+            <textarea id="modal-proof-text" rows="3" placeholder="Describe what you did..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-reject" onclick="closeTaskModal()">Cancel</button>
+            <button class="btn-approve" id="modal-submit-btn" onclick="submitTask()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKETPLACE -->
+    <div id="page-market" class="page hidden">
+      <h2 class="page-title">Marketplace</h2>
+      <div id="market-disabled-msg" class="hidden">
+        <p class="placeholder-text">Marketplace is currently disabled.</p>
+      </div>
+      <div id="market-content">
+        <div class="tab-switch">
+          <button class="tab-btn active" data-tab="browse"    onclick="switchMarketTab('browse')">Browse</button>
+          <button class="tab-btn"        data-tab="my-gigs"   onclick="switchMarketTab('my-gigs')">My Gigs</button>
+          <button class="tab-btn"        data-tab="my-orders" onclick="switchMarketTab('my-orders')">My Orders</button>
+        </div>
+        <div id="market-browse-tab">
+          <button class="btn-primary" id="post-gig-btn" onclick="openPostGigModal()" style="margin-bottom:14px;">
+            <span class="btn-text">+ Post a Gig</span><span class="btn-spinner"></span>
+          </button>
+          <div id="browse-gigs-list" class="mail-list"></div>
+        </div>
+        <div id="market-my-gigs-tab" class="hidden">
+          <div id="my-gigs-list" class="mail-list"></div>
+        </div>
+        <div id="market-my-orders-tab" class="hidden">
+          <div class="tab-switch" style="margin-bottom:12px;">
+            <button class="tab-btn active" data-otab="buying"  onclick="switchOrderTab('buying')">Buying</button>
+            <button class="tab-btn"        data-otab="selling" onclick="switchOrderTab('selling')">Selling</button>
+          </div>
+          <div id="orders-buying-list" class="mail-list"></div>
+          <div id="orders-selling-list" class="mail-list hidden"></div>
+        </div>
+      </div>
+      <!-- Post Gig Modal -->
+      <div id="post-gig-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 class="modal-title">Post a Gig</h3>
+          <p id="post-gig-fee-info" class="modal-desc"></p>
+          <form id="post-gig-form" class="auth-form">
+            <div class="input-group"><label>Title (min 5 chars)</label><input type="text" id="gig-title" required maxlength="100"></div>
+            <div class="input-group"><label>Description</label><textarea id="gig-desc" rows="3" required maxlength="500"></textarea></div>
+            <div class="input-group"><label>Price (USDT)</label><input type="number" id="gig-price" step="0.01" min="0.01" required></div>
+            <div class="input-group"><label>Delivery Instructions</label><input type="text" id="gig-delivery" placeholder="e.g. Send me your page link"></div>
+            <div class="modal-actions">
+              <button type="button" class="btn-reject" onclick="closePostGigModal()">Cancel</button>
+              <button type="submit" class="btn-approve" id="post-gig-submit-btn">Post Gig</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Order Modal -->
+      <div id="order-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 id="order-modal-title" class="modal-title"></h3>
+          <div id="order-modal-details" class="modal-desc"></div>
+          <div class="input-group" style="margin-top:12px;">
+            <label>Note to Seller (optional)</label>
+            <textarea id="order-buyer-note" rows="2" placeholder="Any specific instructions..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-reject" onclick="closeOrderModal()">Cancel</button>
+            <button class="btn-approve" id="order-confirm-btn" onclick="confirmOrder()">Confirm & Pay</button>
+          </div>
+        </div>
+      </div>
+      <!-- Deliver Modal -->
+      <div id="deliver-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 class="modal-title">Mark as Delivered</h3>
+          <div class="input-group">
+            <label>Delivery Note (proof/link/details)</label>
+            <textarea id="deliver-note" rows="3" required placeholder="Describe what you delivered..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-reject" onclick="closeDeliverModal()">Cancel</button>
+            <button class="btn-approve" id="deliver-confirm-btn" onclick="confirmDelivery()">Mark Delivered</button>
+          </div>
+        </div>
+      </div>
+      <!-- Dispute Modal -->
+      <div id="dispute-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 class="modal-title">Raise Dispute</h3>
+          <p class="modal-desc">Explain why you are disputing this order (min 10 chars).</p>
+          <div class="input-group">
+            <textarea id="dispute-note" rows="3" required placeholder="Describe your issue in detail..."></textarea>
+          </div>
+          <div class="modal-actions">
+            <button class="btn-reject" onclick="closeDisputeModal()">Cancel</button>
+            <button class="btn-approve" id="dispute-confirm-btn" onclick="confirmDispute()">Submit Dispute</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LUCKY DRAW -->
+    <div id="page-luckydraw" class="page hidden">
+      <h2 class="page-title">Lucky Draw</h2>
+      <div id="draw-disabled-msg" class="hidden">
+        <p class="placeholder-text">Lucky Draw is currently disabled.</p>
+      </div>
+      <div id="draw-main-content">
+        <div id="no-draw-msg" class="hidden">
+          <p class="placeholder-text">No active draw right now. Check back soon!</p>
+        </div>
+        <div id="draw-active-section" class="hidden">
+          <div class="draw-hero-card">
+            <div class="draw-trophy">🏆</div>
+            <h2 id="draw-title" class="draw-title"></h2>
+            <div class="draw-jackpot-badge">
+              <span class="draw-jackpot-label">JACKPOT</span>
+              <span id="draw-jackpot" class="draw-jackpot-amount">0.00 USDT</span>
+            </div>
+            <div id="draw-tickets-sold-row" class="draw-tickets-sold hidden">
+              <svg class="icon" viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+              Tickets: <span id="tickets-sold-count" class="draw-accent">0</span><span id="tickets-max-display"></span>
+            </div>
+            <div id="draw-ticket-info" class="draw-meta">
+              Ticket Price: <span id="draw-ticket-price" class="draw-accent"></span>
+            </div>
+            <div id="my-ticket-info" class="draw-my-ticket hidden">
+              <svg class="icon" viewBox="0 0 24 24" style="color:var(--success)"><polyline points="20 6 9 17 4 12"/></svg>
+              Ticket #<span id="my-ticket-number"></span> — You're in!
+            </div>
+          </div>
+          <div id="draw-sale-section">
+            <div class="countdown-card" id="sale-countdown-card">
+              <span class="countdown-label" id="countdown-label">Ticket Sales End In</span>
+              <div class="countdown-timer" id="draw-countdown">--:--:--</div>
+            </div>
+            <button class="btn-primary" id="buy-ticket-btn" onclick="openTicketConfirmModal()">
+              <span class="btn-text">Buy Ticket</span><span class="btn-spinner"></span>
+            </button>
+          </div>
+          <div id="draw-pending-section" class="hidden">
+            <div class="countdown-card draw-pending-card">
+              <span class="countdown-label">Draw Happens In</span>
+              <div class="countdown-timer" id="draw-pending-countdown">--:--:--</div>
+            </div>
+            <p style="text-align:center;font-size:12px;color:var(--text-secondary);margin-top:8px;">Ticket sales have ended. Get ready!</p>
+            <button class="btn-primary" style="margin-top:12px;opacity:0.6;cursor:not-allowed;" disabled>
+        <span class="btn-text">Sales Ended</span>
+      </button>
+          </div>
+        </div>
+        <div id="draw-completed-section" class="hidden"></div>
+        <div id="past-draws-section" style="margin-top:20px;">
+          <h3 class="section-subtitle">Past Draws</h3>
+          <div id="past-draws-list" class="mail-list"></div>
+        </div>
+      </div>
+      <!-- Draw Animation Overlay -->
+      <div id="draw-animation-overlay" class="draw-overlay hidden">
+        <div class="draw-overlay-inner">
+          <div class="draw-overlay-header">
+            <div class="draw-lotto-title">🎰 LUCKY DRAW 🎰</div>
+            <div class="draw-spinning-subtitle" id="draw-suspense-text">Preparing draw...</div>
+          </div>
+          <div class="draw-drum-container">
+            <div class="draw-drum-fade top"></div>
+            <div class="draw-drum-highlight"></div>
+            <div id="draw-drum" class="draw-drum"></div>
+            <div class="draw-drum-fade bottom"></div>
+          </div>
+          <div class="draw-pointer-left">▶</div>
+          <div class="draw-pointer-right">◀</div>
+        </div>
+      </div>
+      <!-- Ticket Confirm Modal -->
+      <div id="ticket-confirm-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 class="modal-title">🎫 Confirm Ticket Purchase</h3>
+          <div id="ticket-confirm-details" class="modal-desc"></div>
+          <div class="modal-actions">
+            <button class="btn-reject" onclick="closeTicketModal()">Cancel</button>
+            <button class="btn-approve" id="ticket-confirm-btn" onclick="confirmBuyTicket()">Buy Ticket</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GAMES -->
+    <div id="page-games" class="page hidden">
+      <h2 class="page-title">🎮 Game Zone</h2>
+      <div id="games-disabled-msg" class="hidden">
+        <p class="placeholder-text">Games are currently disabled.</p>
+      </div>
+      <div id="games-content">
+        <div class="tab-switch">
+          <button class="tab-btn active" data-tab="puzzle" onclick="switchGameTab('puzzle')">🧩 Puzzle</button>
+          <button class="tab-btn"        data-tab="memory" onclick="switchGameTab('memory')">🃏 Memory</button>
+          <button class="tab-btn"        data-tab="hunt"   onclick="switchGameTab('hunt')">🎯 Hunt</button>
+          <button class="tab-btn" data-tab="rhythm" onclick="switchGameTab('rhythm')">⚡ Neon</button>
+        </div>
+        <!-- BRAIN PUZZLE -->
+        <div id="game-puzzle-tab">
+          <div id="puzzle-loading" class="placeholder-text">Loading today's puzzle...</div>
+          <div id="puzzle-content" class="hidden">
+            <div class="game-info-card">
+              <div class="game-badge">🧩 Daily Brain Puzzle</div>
+              <div class="game-sub">Answer correctly to win — first <span id="puzzle-max-winners"></span> winners only!</div>
+              <div class="game-sub" id="puzzle-entry-fee-display" style="color:var(--warning);"></div>
+            </div>
+            <div id="puzzle-no-puzzle" class="hidden">
+              <p class="placeholder-text">No puzzle today. Check back tomorrow!</p>
+            </div>
+            <div id="puzzle-active" class="hidden">
+              <div class="puzzle-card">
+                <div class="puzzle-winners-row">
+                  <span class="puzzle-winners-badge" id="puzzle-winners-left"></span>
+                  <span class="puzzle-timer" id="puzzle-timer"></span>
+                </div>
+                <div class="puzzle-question" id="puzzle-question"></div>
+                <button class="puzzle-hint-btn" id="puzzle-hint-btn" onclick="showPuzzleHint()">💡 Show Hint</button>
+                <div class="puzzle-hint hidden" id="puzzle-hint"></div>
+              </div>
+              <div id="puzzle-answer-section">
+                <div class="input-group">
+                  <label>Your Answer</label>
+                  <input type="text" id="puzzle-answer-input" placeholder="Type your answer..."
+                    maxlength="100" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                </div>
+                <button class="btn-primary" id="puzzle-submit-btn" onclick="submitPuzzleAnswer()">
+                  <span class="btn-text">Submit Answer</span><span class="btn-spinner"></span>
+                </button>
+              </div>
+              <div id="puzzle-result" class="hidden"></div>
+            </div>
+          </div>
+        </div>
+        <!-- MEMORY CARD -->
+        <div id="game-memory-tab" class="hidden">
+          <div id="memory-lobby">
+            <div class="game-info-card">
+              <div class="game-badge">🃏 Memory Card Game</div>
+              <div class="game-sub">Match all pairs before time runs out!</div>
+              <div class="game-plays-info" id="memory-plays-info"></div>
+            </div>
+            <div class="memory-difficulty-grid">
+              <div class="difficulty-card" onclick="startMemoryGame('easy')">
+                <div class="diff-icon">😊</div>
+                <div class="diff-name">Easy</div>
+                <div class="diff-detail">6 pairs</div>
+                <div class="diff-reward" id="memory-reward-easy"></div>
+              </div>
+              <div class="difficulty-card" onclick="startMemoryGame('medium')">
+                <div class="diff-icon">😤</div>
+                <div class="diff-name">Medium</div>
+                <div class="diff-detail">10 pairs</div>
+                <div class="diff-reward" id="memory-reward-medium"></div>
+              </div>
+              <div class="difficulty-card" onclick="startMemoryGame('hard')">
+                <div class="diff-icon">🔥</div>
+                <div class="diff-name">Hard</div>
+                <div class="diff-detail">15 pairs</div>
+                <div class="diff-reward" id="memory-reward-hard"></div>
+              </div>
+            </div>
+          </div>
+          <div id="memory-game" class="hidden">
+            <div class="memory-header">
+              <div class="memory-stat"><span id="memory-pairs-left"></span><small>Pairs Left</small></div>
+              <div class="memory-timer-display" id="memory-timer-display">60</div>
+              <div class="memory-stat"><span id="memory-moves">0</span><small>Moves</small></div>
+            </div>
+            <div id="memory-grid" class="memory-grid"></div>
+            <button class="btn-primary" onclick="quitMemoryGame()" style="margin-top:12px;background:var(--bg-secondary);color:var(--text-secondary);">
+              <span class="btn-text">Quit Game</span><span class="btn-spinner"></span>
+            </button>
+          </div>
+        </div>
+        <!-- NUMBER HUNT -->
+        <div id="game-hunt-tab" class="hidden">
+          <div id="hunt-lobby">
+            <div class="game-info-card">
+              <div class="game-badge">🎯 Number Hunt</div>
+              <div class="game-sub">Find the secret number in <span id="hunt-max-guesses-display"></span> guesses!</div>
+              <div class="game-plays-info" id="hunt-plays-info"></div>
+              <div class="hunt-range-display">Range: 1 to <span id="hunt-range-display"></span></div>
+            </div>
+            <button class="btn-primary" id="hunt-start-btn" onclick="startHuntGame()">
+              <span class="btn-text">Start Hunting 🎯</span><span class="btn-spinner"></span>
+            </button>
+          </div>
+          <div id="hunt-game" class="hidden">
+            <div class="hunt-header">
+              <div class="hunt-range-badge">1 – <span id="hunt-range-badge"></span></div>
+              <div class="hunt-guesses-left"><span id="hunt-guesses-remaining"></span> guesses left</div>
+            </div>
+            <div id="hunt-guess-history" class="hunt-history"></div>
+            <div id="hunt-input-section">
+              <div class="hunt-input-row">
+                <input type="number" id="hunt-guess-input" placeholder="Enter number..." min="1">
+                <button class="btn-approve" id="hunt-guess-btn" onclick="makeHuntGuess()">Guess</button>
+              </div>
+            </div>
+            <div id="hunt-result" class="hidden"></div>
+          </div>
+        </div>
+       </div>
+
+      <!-- NEON STRIKE RHYTHM GAME -->
+    <div id="game-rhythm-tab" class="hidden">
+      <div id="rhythm-lobby">
+        <div class="game-info-card">
+          <div class="game-badge">⚡ Neon Strike</div>
+          <div class="game-sub">Tap nodes with perfect timing — hit the glow!</div>
+          <div class="game-plays-info" id="rhythm-plays-info"></div>
+        </div>
+        <div class="memory-difficulty-grid">
+          <div class="difficulty-card" onclick="startRhythmGame('easy')">
+            <div class="diff-icon">😊</div>
+            <div class="diff-name">Easy</div>
+            <div class="diff-detail">20 nodes · Slow</div>
+            <div class="diff-reward" id="rhythm-reward-easy"></div>
+          </div>
+          <div class="difficulty-card" onclick="startRhythmGame('medium')">
+            <div class="diff-icon">😤</div>
+            <div class="diff-name">Medium</div>
+            <div class="diff-detail">30 nodes · Fast</div>
+            <div class="diff-reward" id="rhythm-reward-medium"></div>
+          </div>
+          <div class="difficulty-card" onclick="startRhythmGame('hard')">
+            <div class="diff-icon">🔥</div>
+            <div class="diff-name">Hard</div>
+            <div class="diff-detail">45 nodes · Ultra</div>
+            <div class="diff-reward" id="rhythm-reward-hard"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Arena -->
+      <div id="rhythm-arena" class="hidden">
+        <!-- HUD -->
+        <div class="rhythm-hud">
+          <div class="rhythm-hud-left">
+            <div class="rhythm-score" id="rhythm-score-display">0</div>
+            <div class="rhythm-score-label">SCORE</div>
+          </div>
+          <div class="rhythm-hud-center">
+            <div class="rhythm-progress-bar">
+              <div class="rhythm-progress-fill" id="rhythm-progress-fill"></div>
+            </div>
+            <div class="rhythm-combo" id="rhythm-combo-display"></div>
+          </div>
+          <div class="rhythm-hud-right">
+            <div class="rhythm-accuracy" id="rhythm-accuracy-display">100%</div>
+            <div class="rhythm-score-label">ACCURACY</div>
+          </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="rhythm-countdown hidden" id="rhythm-countdown">
+          <div class="rhythm-countdown-num" id="rhythm-countdown-num">3</div>
+        </div>
+
+        <!-- Node Grid -->
+        <div class="rhythm-grid" id="rhythm-grid">
+          <!-- 12 nodes — 3x4 grid -->
+          <div class="rnode" id="rnode-0" data-pos="0"></div>
+          <div class="rnode" id="rnode-1" data-pos="1"></div>
+          <div class="rnode" id="rnode-2" data-pos="2"></div>
+          <div class="rnode" id="rnode-3" data-pos="3"></div>
+          <div class="rnode" id="rnode-4" data-pos="4"></div>
+          <div class="rnode" id="rnode-5" data-pos="5"></div>
+          <div class="rnode" id="rnode-6" data-pos="6"></div>
+          <div class="rnode" id="rnode-7" data-pos="7"></div>
+          <div class="rnode" id="rnode-8" data-pos="8"></div>
+          <div class="rnode" id="rnode-9" data-pos="9"></div>
+          <div class="rnode" id="rnode-10" data-pos="10"></div>
+          <div class="rnode" id="rnode-11" data-pos="11"></div>
+        </div>
+
+        <!-- Feedback Popup -->
+        <div class="rhythm-feedback hidden" id="rhythm-feedback"></div>
+
+        <button class="btn-primary" onclick="quitRhythmGame()"
+          style="margin-top:10px;background:var(--bg-secondary);color:var(--text-secondary);font-size:12px;padding:10px;">
+          <span class="btn-text">Quit</span><span class="btn-spinner"></span>
+        </button>
+      </div>
+
+      <!-- Result -->
+      <div id="rhythm-result" class="hidden">
+        <div class="game-result-card" style="margin:16px 0;">
+          <div id="rhythm-result-icon" class="result-icon"></div>
+          <div id="rhythm-result-title" class="result-title"></div>
+          <div id="rhythm-result-stats" class="rhythm-result-stats"></div>
+          <div id="rhythm-result-msg" class="result-sub"></div>
+          <button class="btn-primary" onclick="resetRhythmGame()" style="margin-top:14px;">
+            <span class="btn-text">Play Again</span><span class="btn-spinner"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+      <!-- Memory Result Overlay -->
+      <div id="memory-result-overlay" class="game-result-overlay hidden">
+        <div class="game-result-card">
+          <div id="memory-result-icon" class="result-icon"></div>
+          <div id="memory-result-title" class="result-title"></div>
+          <div id="memory-result-sub" class="result-sub"></div>
+          <button class="btn-primary" onclick="closeMemoryResult()">Play Again</button>
+        </div>
+      </div>
+
+      <!-- Game Confirm Modal -->
+      <div id="game-confirm-modal" class="modal hidden">
+        <div class="modal-card">
+          <h3 id="game-confirm-title" class="modal-title"></h3>
+          <div id="game-confirm-details"></div>
+          <div class="modal-actions">
+            <button class="btn-reject" onclick="closeGameConfirmModal()">Cancel</button>
+            <button class="btn-approve" id="game-confirm-btn">Confirm</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDE -->
+    <div id="page-guide" class="page hidden">
+      <h2 class="page-title">Platform Guide</h2>
+      <div id="guide-content" class="guide-list"></div>
+    </div>
+
+    <!-- RANK -->
+    <div id="page-rank" class="page hidden">
+      <h2 class="page-title">Rank</h2>
+      <div class="tier-card">
+        <div class="tier-icon-wrap">
+          <svg class="icon tier-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>
+        </div>
+        <h3 id="tier-name" class="tier-name">Bronze Member</h3>
+        <div class="tier-progress-wrap">
+          <div class="progress-bar"><div id="tier-progress-fill" class="progress-fill"></div></div>
+          <span id="tier-progress-text" class="progress-text">0.00 / 10 USDT to Silver</span>
+        </div>
+      </div>
+      <div class="tab-switch">
+        <button class="tab-btn active" data-tab="balance"   onclick="switchRankTab('balance')">Top Balance Holders</button>
+        <button class="tab-btn"        data-tab="referrers" onclick="switchRankTab('referrers')">Top Referrers</button>
+      </div>
+      <div id="leaderboard-balance-tab">
+        <div id="leaderboard-list" class="mail-list"></div>
+      </div>
+      <div id="leaderboard-referrers-tab" class="hidden">
+        <div id="referrers-list" class="mail-list"></div>
+      </div>
+    </div>
+
+    <!-- WALLET -->
+    <div id="page-wallet" class="page hidden">
+      <h2 class="page-title">Wallet</h2>
+      <div class="balance-box" style="margin-bottom:16px;">
+        <span class="balance-label">Available Balance</span>
+        <span id="wallet-balance" class="balance-value">0.00 USDT</span>
+      </div>
+      <button class="btn-primary" onclick="openGiftModal()" style="margin-bottom:14px;background:linear-gradient(135deg,#9333ea,#7c3aed);">
+        <span class="btn-text">🎁 Send Gift</span><span class="btn-spinner"></span>
+      </button>
+      <div class="tab-switch">
+        <button class="tab-btn active" data-tab="deposit"  onclick="switchWalletTab('deposit')">Deposit</button>
+        <button class="tab-btn"        data-tab="withdraw" onclick="switchWalletTab('withdraw')">Withdraw</button>
+        <button class="tab-btn"        data-tab="history"  onclick="switchWalletTab('history')">History</button>
+      </div>
+      <!-- Deposit Tab -->
+      <div id="deposit-tab" class="wallet-tab">
+        <div id="deposit-disabled-msg" class="hidden">
+          <p class="placeholder-text">Deposits are temporarily disabled.</p>
+        </div>
+        <div id="deposit-form-wrap">
+          <div class="deposit-address-box">
+            <span class="balance-label">Send USDT (BEP-20) to this address only</span>
+            <div class="address-row" style="margin-top:6px;">
+              <span id="deposit-address-text" class="deposit-address">Loading...</span>
+              <button class="copy-btn" onclick="copyToClipboard(document.getElementById('deposit-address-text').textContent, 'Address copied')">
+                <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              </button>
+            </div>
+            <p class="deposit-warning">Only send USDT BEP-20. Other networks will result in permanent loss.</p>
+          </div>
+          <form id="deposit-form" class="auth-form" style="margin-top:14px;">
+            <div class="input-group">
+              <label>Amount you sent (USDT)</label>
+              <input type="number" id="deposit-amount" step="0.01" min="0" required>
+            </div>
+            <div class="input-group">
+              <label>Transaction ID (TxID / TxHash)</label>
+              <input type="text" id="deposit-txid" placeholder="0x..." required>
+            </div>
+            <div class="input-group">
+              <label>Screenshot URL (optional)</label>
+              <input type="text" id="deposit-screenshot" placeholder="https://...">
+            </div>
+            <div class="preview-box" id="deposit-preview">Fee: 0.00 USDT | You will receive: 0.00 USDT</div>
+            <button type="submit" class="btn-primary" id="deposit-btn">
+              <span class="btn-text">Submit Deposit</span><span class="btn-spinner"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+      <!-- Withdraw Tab -->
+      <div id="withdraw-tab" class="wallet-tab hidden">
+        <form id="withdraw-form" class="auth-form">
+          <div class="input-group">
+            <label>Amount (USDT)</label>
+            <input type="number" id="withdraw-amount" step="0.01" min="0" required>
+          </div>
+          <div class="input-group">
+            <label>BEP20 Wallet Address</label>
+            <input type="text" id="withdraw-address" placeholder="0x..." required>
+          </div>
+          <div class="preview-box" id="withdraw-preview">Fee: 0.00 USDT | Net Payout: 0.00 USDT</div>
+          <button type="submit" class="btn-primary" id="withdraw-btn">
+            <span class="btn-text">Request Withdrawal</span><span class="btn-spinner"></span>
+          </button>
+        </form>
+      </div>
+      <!-- History Tab -->
+      <div id="history-tab" class="wallet-tab hidden">
+        <div class="tab-switch" style="margin-bottom:12px;">
+          <button class="tab-btn active" data-htab="deposits"    onclick="switchHistoryTab('deposits')">Deposits</button>
+          <button class="tab-btn"        data-htab="withdrawals" onclick="switchHistoryTab('withdrawals')">Withdrawals</button>
+        </div>
+        <div id="deposit-history-list" class="mail-list"></div>
+        <div id="withdraw-history" class="mail-list hidden"></div>
+      </div>
+      <div id="ad-wallet-bottom" class="ad-zone"></div>
+    </div>
+
+    <!-- INVITE -->
+    <div id="page-invite" class="page hidden">
+      <h2 class="page-title">Invite & Earn</h2>
+      <div class="invite-link-box">
+        <span id="invite-link" class="invite-link-text">—</span>
+        <button class="copy-btn" onclick="copyToClipboard(document.getElementById('invite-link').textContent, 'Referral link copied')">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        </button>
+      </div>
+      <div class="stat-box">
+        <span class="balance-label">Total Referrals</span>
+        <span id="referral-count" class="balance-value">0</span>
+      </div>
+      <h3 class="section-subtitle">Referral Earnings</h3>
+      <div id="referral-earnings-list" class="mail-list"></div>
+    </div>
+
+    <!-- UPDATES -->
+    <div id="page-updates" class="page hidden">
+      <h2 class="page-title">Updates</h2>
+      <div id="updates-list" class="updates-list"></div>
+      <div id="ad-updates-bottom" class="ad-zone"></div>
+    </div>
+
+       <!-- HELP -->
+    <div id="page-help" class="page hidden">
+      <h2 class="page-title">Help & Support</h2>
+      <p class="support-banner">24/7 Hour Support</p>
+      <div class="support-links">
+        <a id="support-telegram" href="#" target="_blank" class="support-item">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          <span>Telegram Support</span>
+        </a>
+        <a id="support-whatsapp" href="#" target="_blank" class="support-item">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+          <span>WhatsApp Support</span>
+        </a>
+        <a id="support-email" href="#" class="support-item">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6"/></svg>
+          <span>Email Support</span>
+        </a>
+        <div class="legal-section">
+          <h3 class="section-subtitle">Legal</h3>
+          <div class="support-links">
+            <a class="support-item" href="javascript:void(0)" onclick="openPage('privacy')">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+              <span>Privacy Policy</span>
+            </a>
+            <a class="support-item" href="javascript:void(0)" onclick="openPage('terms')">
+              <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 7h8M8 12h8M8 17h4"/></svg>
+              <span>Terms & Conditions</span>
+            </a>
+          </div>
+        </div>
+        <h3 class="section-subtitle" style="margin-top:20px;">Submit a Support Ticket</h3>
+        <form id="ticket-form" class="auth-form">
+          <div class="input-group">
+            <label>Subject</label>
+            <input type="text" id="ticket-subject" required maxlength="100">
+          </div>
+          <div class="input-group">
+            <label>Message</label>
+            <textarea id="ticket-message" rows="4" required maxlength="1000"></textarea>
+          </div>
+          <button type="submit" class="btn-primary" id="ticket-submit-btn">
+            <span class="btn-text">Submit Ticket</span><span class="btn-spinner"></span>
+          </button>
+        </form>
+        <h3 class="section-subtitle" style="margin-top:20px;">My Tickets</h3>
+        <div id="my-tickets-list" class="mail-list"></div>
+      </div>
+    </div>
+
+    <!-- MAILBOX -->
+    <div id="page-mailbox" class="page hidden">
+      <h2 class="page-title">Mailbox</h2>
+      <div class="tab-switch">
+        <button class="tab-btn active" data-tab="private" onclick="switchMailTab('private')">
+          Private Mail
+          <span id="private-badge" class="tab-badge hidden">0</span>
+        </button>
+        <button class="tab-btn" data-tab="global" onclick="switchMailTab('global')">
+          Global Mail
+          <span id="global-badge" class="tab-badge hidden">0</span>
+        </button>
+      </div>
+      <div id="private-mail-list" class="mail-list"></div>
+      <div id="global-mail-list" class="mail-list hidden"></div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="page-admin" class="page hidden">
+      <h2 class="page-title">Admin Panel</h2>
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" data-tab="users"       onclick="switchAdminTab('users')">Users</button>
+        <button class="admin-tab-btn"        data-tab="deposits"    onclick="switchAdminTab('deposits')">Deposits</button>
+        <button class="admin-tab-btn"        data-tab="withdrawals" onclick="switchAdminTab('withdrawals')">Withdrawals</button>
+        <button class="admin-tab-btn"        data-tab="mailbox"     onclick="switchAdminTab('mailbox')">Mailbox</button>
+        <button class="admin-tab-btn"        data-tab="updates"     onclick="switchAdminTab('updates')">Updates</button>
+        <button class="admin-tab-btn"        data-tab="settings"    onclick="switchAdminTab('settings')">Settings</button>
+        <button class="admin-tab-btn"        data-tab="tickets"     onclick="switchAdminTab('tickets')">Tickets</button>
+        <button class="admin-tab-btn"        data-tab="marketplace" onclick="switchAdminTab('marketplace')">Market</button>
+        <button class="admin-tab-btn"        data-tab="luckydraw"   onclick="switchAdminTab('luckydraw')">Lucky Draw</button>
+        <button class="admin-tab-btn"        data-tab="games"       onclick="switchAdminTab('games')">Games</button>
+        <button class="admin-tab-btn"        data-tab="taskreviews" onclick="switchAdminTab('taskreviews')">Tasks</button>
+        <button class="admin-tab-btn"        data-tab="analytics"   onclick="switchAdminTab('analytics')">Analytics</button>
+        <button class="admin-tab-btn"        data-tab="fraud"       onclick="switchAdminTab('fraud')">Fraud</button>
+      </div>
+
+      <!-- USERS TAB -->
+      <div id="admin-users-tab" class="admin-tab-content">
+        <div class="input-group">
+          <label>Search by UID or Username</label>
+          <input type="text" id="admin-search-input" placeholder="TGR123456 or username">
+        </div>
+        <button class="btn-primary" id="admin-search-btn" onclick="adminSearchUser()">
+          <span class="btn-text">Search</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-search-results" class="admin-results"></div>
+        <div id="adjust-form-container" class="admin-adjust-section hidden">
+          <h3 class="section-subtitle" id="adjust-target-label">Adjusting: —</h3>
+          <form id="admin-adjust-form" class="auth-form">
+            <input type="hidden" id="adjust-target-uid">
+            <div class="input-group">
+              <label>Operation</label>
+              <select id="adjust-operation">
+                <option value="add">Add Balance</option>
+                <option value="deduct">Deduct Balance</option>
+              </select>
+            </div>
+            <div class="input-group">
+              <label>Amount (USDT)</label>
+              <input type="number" id="adjust-amount" step="0.01" min="0.01" required>
+            </div>
+            <div class="input-group">
+              <label>Reason (sent to user's mailbox)</label>
+              <textarea id="adjust-reason" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn-primary" id="admin-adjust-btn-submit">
+              <span class="btn-text">Submit</span><span class="btn-spinner"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- DEPOSITS TAB -->
+      <div id="admin-deposits-tab" class="admin-tab-content hidden">
+        <button class="btn-primary" id="admin-load-deposits-btn" onclick="loadPendingDeposits()">
+          <span class="btn-text">Refresh</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-deposits-list" class="admin-results" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- WITHDRAWALS TAB -->
+      <div id="admin-withdrawals-tab" class="admin-tab-content hidden">
+        <button class="btn-primary" id="admin-load-withdrawals-btn" onclick="loadPendingWithdrawals()">
+          <span class="btn-text">Refresh</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-withdrawals-list" class="admin-results"></div>
+      </div>
+
+      <!-- MAILBOX TAB -->
+      <div id="admin-mailbox-tab" class="admin-tab-content hidden">
+        <div class="admin-tabs">
+          <button class="admin-mail-tab-btn active" data-tab="global"  onclick="switchAdminMailTab('global')">Global Mail</button>
+          <button class="admin-mail-tab-btn"         data-tab="private" onclick="switchAdminMailTab('private')">Private Mail</button>
+        </div>
+        <div id="admin-mail-global-tab">
+          <h3 class="section-subtitle" style="margin-top:20px;">Sent Global Mails</h3>
+          <button class="btn-primary" id="load-global-mails-btn" onclick="loadAdminGlobalMails()">
+            <span class="btn-text">Refresh</span><span class="btn-spinner"></span>
+          </button>
+          <div id="admin-global-mails-list" class="admin-results" style="margin-top:12px;"></div>
+          <form id="admin-global-mail-form" class="auth-form" style="margin-top:16px;">
+            <div class="input-group"><label>Subject</label><input type="text" id="global-mail-subject"></div>
+            <div class="input-group"><label>Message</label><textarea id="global-mail-message" rows="4" required></textarea></div>
+            <button type="submit" class="btn-primary" id="global-mail-btn">
+              <span class="btn-text">Send To All Users</span><span class="btn-spinner"></span>
+            </button>
+          </form>
+        </div>
+        <div id="admin-mail-private-tab" class="hidden">
+          <form id="admin-private-mail-form" class="auth-form">
+            <div class="input-group"><label>Target UID</label><input type="text" id="private-mail-uid" placeholder="TGR123456" required></div>
+            <div class="input-group"><label>Subject</label><input type="text" id="private-mail-subject"></div>
+            <div class="input-group"><label>Message</label><textarea id="private-mail-message" rows="4" required></textarea></div>
+            <button type="submit" class="btn-primary" id="private-mail-btn">
+              <span class="btn-text">Send Private Mail</span><span class="btn-spinner"></span>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- UPDATES TAB -->
+      <div id="admin-updates-tab" class="admin-tab-content hidden">
+        <form id="admin-update-form" class="auth-form">
+          <div class="input-group"><label>Title</label><input type="text" id="update-title"></div>
+          <div class="input-group"><label>Content</label><textarea id="update-content" rows="4" required></textarea></div>
+          <div class="input-group"><label>Image URL (optional)</label><input type="text" id="update-image-url" placeholder="https://..."></div>
+          <div class="input-group"><label>Video URL (optional)</label><input type="text" id="update-video-url" placeholder="https://..."></div>
+          <button type="submit" class="btn-primary" id="post-update-btn">
+            <span class="btn-text">Post Update</span><span class="btn-spinner"></span>
+          </button>
+        </form>
+        <h3 class="section-subtitle" style="margin-top:20px;">Manage Updates</h3>
+        <div id="admin-updates-list" class="admin-results"></div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div id="admin-settings-tab" class="admin-tab-content hidden">
+
+        <h3 class="section-subtitle">📊 Statistics Page</h3>
+  <div class="toggle-row">
+    <span>Statistics Page Enabled</span>
+    <label class="switch"><input type="checkbox" id="setting-stats-enabled" checked><span class="slider"></span></label>
+  </div>
+  <div class="input-group"><label>Page Tagline</label><input type="text" id="st-tagline" maxlength="80"></div>
+  <div class="input-group"><label>Page Subtitle</label><input type="text" id="st-subtitle" maxlength="80"></div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;">
+    <div class="input-group"><label>Stat 1 Value</label><input type="text" id="st-s1v" placeholder="1,000+"></div>
+    <div class="input-group"><label>Stat 1 Label</label><input type="text" id="st-s1l" placeholder="Active Members"></div>
+    <div class="input-group"><label>Stat 2 Value</label><input type="text" id="st-s2v" placeholder="$500+"></div>
+    <div class="input-group"><label>Stat 2 Label</label><input type="text" id="st-s2l" placeholder="USDT Paid Out"></div>
+    <div class="input-group"><label>Stat 3 Value</label><input type="text" id="st-s3v" placeholder="99%"></div>
+    <div class="input-group"><label>Stat 3 Label</label><input type="text" id="st-s3l" placeholder="Satisfaction"></div>
+    <div class="input-group"><label>Stat 4 Value</label><input type="text" id="st-s4v" placeholder="10+"></div>
+    <div class="input-group"><label>Stat 4 Label</label><input type="text" id="st-s4l" placeholder="Ways to Earn"></div>
+  </div>
+
+  <div class="toggle-row">
+    <span>Auto Member Count (live from DB)</span>
+    <label class="switch"><input type="checkbox" id="st-live-members"><span class="slider"></span></label>
+  </div>
+  <div class="toggle-row">
+    <span>Auto USDT Paid (live from DB)</span>
+    <label class="switch"><input type="checkbox" id="st-live-paid"><span class="slider"></span></label>
+  </div>
+
+  <div class="input-group"><label>Trust Badges (5 badges, one per line)</label>
+    <textarea id="st-badges" rows="5" placeholder="🔒 Bank-Level Security&#10;⚡ Instant Rewards&#10;💎 Verified Payouts&#10;🎯 Daily Earnings&#10;🤝 Fair Platform"></textarea>
+  </div>
+
+  <div class="input-group"><label>Feature 1 (emoji | Title | Description)</label><input type="text" id="st-f1" placeholder="💰|Earn Multiple Ways|Tasks, games, referrals and more"></div>
+  <div class="input-group"><label>Feature 2</label><input type="text" id="st-f2" placeholder="🔒|Fully Secured|Server-verified transactions"></div>
+  <div class="input-group"><label>Feature 3</label><input type="text" id="st-f3" placeholder="💸|Real Withdrawals|USDT to your BEP-20 wallet"></div>
+
+  <div class="input-group"><label>Live Ticker Items (pipe-separated | )</label>
+    <textarea id="st-ticker" rows="4" placeholder="Task reward · +0.10 USDT|Withdrawal · 2.00 USDT|Game win · +0.08 USDT"></textarea>
+  </div>
+
+        <h3 class="section-subtitle">Support Links</h3>
+        <div class="input-group"><label>Telegram Support URL</label><input type="text" id="setting-telegram"></div>
+        <div class="input-group"><label>WhatsApp Support URL</label><input type="text" id="setting-whatsapp"></div>
+        <div class="input-group"><label>Support Email</label><input type="text" id="setting-email"></div>
+        <h3 class="section-subtitle">Deposit Settings</h3>
+        <div class="input-group"><label>Deposit Wallet Address (BEP-20)</label><input type="text" id="setting-deposit-address" placeholder="0x..."></div>
+        <div class="input-group"><label>Minimum Deposit (USDT)</label><input type="number" id="setting-deposit-min" step="0.01"></div>
+        <div class="input-group"><label>Deposit Processing Fee (%)</label><input type="number" id="setting-deposit-fee" step="0.01" min="0"></div>
+        <div class="toggle-row">
+          <span>Deposits Enabled</span>
+          <label class="switch"><input type="checkbox" id="setting-deposit-enabled" checked><span class="slider"></span></label>
+        </div>
+        <h3 class="section-subtitle">Marketplace Settings</h3>
+        <div class="toggle-row">
+          <span>Marketplace Enabled</span>
+          <label class="switch"><input type="checkbox" id="setting-market-enabled" checked><span class="slider"></span></label>
+        </div>
+        <div class="input-group"><label>Gig Listing Fee (USDT)</label><input type="number" id="setting-market-listing-fee" step="0.01" min="0"></div>
+        <div class="input-group"><label>Transaction Fee (%)</label><input type="number" id="setting-market-txn-fee" step="0.01" min="0"></div>
+        <h3 class="section-subtitle">Gifting Settings</h3>
+        <div class="toggle-row">
+          <span>Gifting Enabled</span>
+          <label class="switch"><input type="checkbox" id="setting-gift-enabled" checked><span class="slider"></span></label>
+        </div>
+        <div class="input-group"><label>Gift Fee (%)</label><input type="number" id="setting-gift-fee" step="0.01" min="0"></div>
+        <div class="input-group"><label>Minimum Gift Amount (USDT)</label><input type="number" id="setting-gift-min" step="0.01" min="0"></div>
+        <h3 class="section-subtitle">Lucky Draw Settings</h3>
+        <div class="toggle-row">
+          <span>Lucky Draw Enabled</span>
+          <label class="switch"><input type="checkbox" id="setting-draw-enabled" checked><span class="slider"></span></label>
+        </div>
+        <h3 class="section-subtitle">Withdrawal Settings</h3>
+        <div class="input-group"><label>Minimum Withdrawal (USDT)</label><input type="number" id="setting-min-withdrawal" step="0.01"></div>
+        <div class="input-group"><label>Withdrawal Fee (%)</label><input type="number" id="setting-withdrawal-fee" step="0.01"></div>
+        <h3 class="section-subtitle">Referral Settings</h3>
+        <div class="input-group"><label>Referral Commission (%)</label><input type="number" id="setting-referral-commission" step="0.01"></div>
+        <h3 class="section-subtitle">Maintenance Mode</h3>
+        <div class="toggle-row">
+          <span>Disable Withdrawals (Maintenance)</span>
+          <label class="switch"><input type="checkbox" id="setting-maintenance"><span class="slider"></span></label>
+        </div>
+        <h3 class="section-subtitle">Daily Rewards Settings</h3>
+        <div class="input-group"><label>Daily Check-in Bonus (USDT)</label><input type="number" id="setting-checkin-bonus" step="0.001"></div>
+        <h3 class="section-subtitle">Advertising (Adsterra)</h3>
+        <div class="input-group">
+          <label>Adsterra Script Code</label>
+          <textarea id="setting-adsterra-code" rows="3" placeholder='<script src="//....js"></script>'></textarea>
+        </div>
+        <h3 class="section-subtitle">Ad Zones</h3>
+        <div class="input-group"><label>Auth Screen — Top</label><textarea id="ad-auth-top-code" rows="2"></textarea></div>
+        <div class="input-group"><label>Auth Screen — Bottom</label><textarea id="ad-auth-bottom-code" rows="2"></textarea></div>
+        <div class="input-group"><label>Earn Page — Top</label><textarea id="ad-earn-top-code" rows="2"></textarea></div>
+        <div class="input-group"><label>Wallet Page — Bottom</label><textarea id="ad-wallet-bottom-code" rows="2"></textarea></div>
+        <div class="input-group"><label>Updates Page — Bottom</label><textarea id="ad-updates-bottom-code" rows="2"></textarea></div>
+        <div class="input-group"><label>Profile Page — Bottom</label><textarea id="ad-profile-bottom-code" rows="2"></textarea></div>
+        <h3 class="section-subtitle">Daily Earning Cap</h3>
+        <div class="input-group"><label>Max Earning Per User Per Day (USDT, 0 = unlimited)</label><input type="number" id="setting-daily-cap" step="0.01" min="0"></div>
+        <h3 class="section-subtitle">Withdrawal Requirements</h3>
+        <div class="input-group"><label>Min Check-in Streak Required (0 = none)</label><input type="number" id="setting-min-checkins" step="1" min="0"></div>
+        <div class="input-group"><label>Min Approved Tasks Required (0 = none)</label><input type="number" id="setting-min-tasks" step="1" min="0"></div>
+        <h3 class="section-subtitle">Offerwall Settings</h3>
+        <div class="input-group"><label>Offerwall URL (use {subid} as user ID placeholder)</label><input type="text" id="setting-offerwall-url" placeholder="https://network.com/offerwall?user_id={subid}"></div>
+        <div class="input-group"><label>User Share (%) of offer payout</label><input type="number" id="setting-offerwall-share" step="1" min="1" max="100"></div>
+        <div class="input-group"><label>Spin Wheel Rewards (8 values, comma-separated)</label><input type="text" id="setting-spin-rewards" placeholder="0.01,0.02,0.01,0.05,0.01,0.02,0.01,0.10"></div>
+        <h3 class="section-subtitle">Rank Tier Thresholds (Total Earned, USDT)</h3>
+        <div class="input-group"><label>Silver</label><input type="number" id="setting-tier-silver" step="0.01"></div>
+        <div class="input-group"><label>Gold</label><input type="number" id="setting-tier-gold" step="0.01"></div>
+        <div class="input-group"><label>Platinum</label><input type="number" id="setting-tier-platinum" step="0.01"></div>
+        <div class="input-group"><label>Diamond</label><input type="number" id="setting-tier-diamond" step="0.01"></div>
+        <h3 class="section-subtitle">Announcement Banner</h3>
+        <div class="input-group"><label>Banner Text</label><input type="text" id="setting-banner-text" placeholder="New offers available! Earn now."></div>
+        <div class="toggle-row">
+          <span>Banner Active</span>
+          <label class="switch"><input type="checkbox" id="setting-banner-active"><span class="slider"></span></label>
+        </div>
+        <button class="btn-primary" id="save-settings-btn" onclick="saveSettings()">
+          <span class="btn-text">Save Settings</span><span class="btn-spinner"></span>
+        </button>
+      </div>
+
+      <!-- TICKETS TAB -->
+      <div id="admin-tickets-tab" class="admin-tab-content hidden">
+        <button class="btn-primary" id="admin-load-tickets-btn" onclick="loadAdminTickets()">
+          <span class="btn-text">Refresh</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-tickets-list" class="admin-results"></div>
+      </div>
+
+      <!-- MARKETPLACE TAB -->
+      <div id="admin-marketplace-tab" class="admin-tab-content hidden">
+        <button class="btn-primary" id="load-disputes-btn" onclick="loadDisputedOrders()">
+          <span class="btn-text">Load Disputes</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-disputes-list" class="admin-results" style="margin-top:12px;"></div>
+      </div>
+
+       <!-- LUCKY DRAW TAB -->
+      <div id="admin-luckydraw-tab" class="admin-tab-content hidden">
+        <h3 class="section-subtitle">Create New Draw</h3>
+        <form id="admin-draw-form" class="auth-form">
+          <div class="input-group"><label>Draw Title</label><input type="text" id="draw-title-input" required placeholder="Weekly Grand Lucky Draw"></div>
+          <div class="input-group"><label>Jackpot Amount (USDT)</label><input type="number" id="draw-jackpot-input" step="0.01" min="0" required></div>
+          <div class="input-group"><label>Ticket Price (USDT)</label><input type="number" id="draw-ticket-price-input" step="0.01" min="0.01" required></div>
+          <div class="input-group"><label>Max Tickets (leave empty = unlimited)</label><input type="number" id="draw-max-tickets-input" min="2" placeholder="Optional"></div>
+          <div class="input-group"><label>Ticket Sale End (date and time)</label><input type="datetime-local" id="draw-sale-end-input" required></div>
+          <div class="input-group"><label>Draw Time (after sales end)</label><input type="datetime-local" id="draw-draw-at-input" required></div>
+          <button type="submit" class="btn-primary" id="create-draw-btn">
+            <span class="btn-text">Create Draw</span><span class="btn-spinner"></span>
+          </button>
+        </form>
+        <h3 class="section-subtitle" style="margin-top:20px;">Active Draws</h3>
+        <button class="btn-primary" id="refresh-admin-draws-btn" onclick="loadAdminDraws()">
+          <span class="btn-text">Refresh</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-draws-list" class="admin-results" style="margin-top:12px;"></div>
+      </div>
+
+      <!-- GAMES TAB -->
+      <div id="admin-games-tab" class="admin-tab-content hidden">
+        <div class="admin-tabs" style="margin-bottom:16px;">
+          <button class="admin-mail-tab-btn active" data-gtab="puzzle"    onclick="switchAdminGameTab('puzzle')">Puzzle</button>
+          <button class="admin-mail-tab-btn"         data-gtab="settings"  onclick="switchAdminGameTab('settings')">Settings</button>
+          <button class="admin-mail-tab-btn"         data-gtab="analytics" onclick="switchAdminGameTab('analytics')">Analytics</button>
+        </div>
+        <!-- Puzzle Management -->
+        <div id="admin-game-puzzle-tab">
+          <h3 class="section-subtitle">Post Today's Puzzle</h3>
+          <form id="admin-puzzle-form" class="auth-form">
+            <div class="input-group"><label>Question</label><textarea id="ap-question" rows="3" required></textarea></div>
+            <div class="input-group"><label>Hint (optional)</label><input type="text" id="ap-hint"></div>
+            <div class="input-group"><label>Correct Answer (never shown to users)</label><input type="text" id="ap-answer" required autocomplete="off"></div>
+            <div class="input-group"><label>Answer Display (shown after puzzle ends)</label><input type="text" id="ap-answer-display" placeholder="e.g. The answer was: TIGER"></div>
+            <div class="input-group"><label>Reward (USDT)</label><input type="number" id="ap-reward" step="0.01" value="0.10" required></div>
+            <div class="input-group"><label>Max Winners</label><input type="number" id="ap-max-winners" value="10" min="1" required></div>
+            <div class="input-group"><label>Active for (hours)</label><input type="number" id="ap-expires-hours" value="24" min="1" max="72" required></div>
+            <button type="submit" class="btn-primary" id="ap-submit-btn">
+              <span class="btn-text">Post Puzzle</span><span class="btn-spinner"></span>
+            </button>
+          </form>
+          <h3 class="section-subtitle" style="margin-top:16px;">Active Puzzle</h3>
+          <div id="admin-active-puzzle" class="admin-results"></div>
+        </div>
+        <!-- Game Settings -->
+        <div id="admin-game-settings-tab" class="hidden">
+          <div class="toggle-row">
+            <span>Games Enabled</span>
+            <label class="switch"><input type="checkbox" id="setting-games-enabled" checked><span class="slider"></span></label>
+          </div>
+          <h3 class="section-subtitle">Memory Card</h3>
+          <div class="toggle-row">
+            <span>Memory Game Enabled</span>
+            <label class="switch"><input type="checkbox" id="setting-game-memory-enabled" checked><span class="slider"></span></label>
+          </div>
+          <div class="input-group"><label>Entry Fee (USDT)</label><input type="number" id="sg-memory-fee" step="0.01"></div>
+          <div class="input-group"><label>Daily Free Plays</label><input type="number" id="sg-memory-free" step="1" min="0"></div>
+          <div class="input-group"><label>Reward Easy (USDT)</label><input type="number" id="sg-memory-easy" step="0.01"></div>
+          <div class="input-group"><label>Reward Medium (USDT)</label><input type="number" id="sg-memory-medium" step="0.01"></div>
+          <div class="input-group"><label>Reward Hard (USDT)</label><input type="number" id="sg-memory-hard" step="0.01"></div>
+          <div class="input-group"><label>Time Limit Easy (seconds)</label><input type="number" id="sg-memory-time-easy" step="1" min="20"></div>
+          <div class="input-group"><label>Time Limit Medium (seconds)</label><input type="number" id="sg-memory-time-medium" step="1" min="20"></div>
+          <div class="input-group"><label>Time Limit Hard (seconds)</label><input type="number" id="sg-memory-time-hard" step="1" min="20"></div>
+          <h3 class="section-subtitle">Number Hunt</h3>
+          <div class="toggle-row">
+            <span>Number Hunt Enabled</span>
+            <label class="switch"><input type="checkbox" id="setting-game-hunt-enabled" checked><span class="slider"></span></label>
+          </div>
+          <div class="input-group"><label>Entry Fee (USDT)</label><input type="number" id="sg-hunt-fee" step="0.01"></div>
+          <div class="input-group"><label>Win Reward (USDT)</label><input type="number" id="sg-hunt-reward" step="0.01"></div>
+          <div class="input-group"><label>Daily Free Plays</label><input type="number" id="sg-hunt-free" step="1" min="0"></div>
+          <div class="input-group"><label>Number Range (1 to X)</label><input type="number" id="sg-hunt-range" min="50"></div>
+          <div class="input-group"><label>Max Guesses</label><input type="number" id="sg-hunt-guesses" min="3" max="15"></div>
+
+           <h3 class="section-subtitle">Neon Strike (Rhythm)</h3>
+    <div class="toggle-row">
+      <span>Neon Strike Enabled</span>
+      <label class="switch"><input type="checkbox" id="setting-game-rhythm-enabled" checked><span class="slider"></span></label>
+    </div>
+    <div class="input-group"><label>Entry Fee (USDT)</label><input type="number" id="sg-rhythm-fee" step="0.01"></div>
+    <div class="input-group"><label>Daily Free Plays</label><input type="number" id="sg-rhythm-free" step="1" min="0"></div>
+    <div class="input-group"><label>Reward Easy (USDT)</label><input type="number" id="sg-rhythm-easy" step="0.01"></div>
+    <div class="input-group"><label>Reward Medium (USDT)</label><input type="number" id="sg-rhythm-medium" step="0.01"></div>
+    <div class="input-group"><label>Reward Hard (USDT)</label><input type="number" id="sg-rhythm-hard" step="0.01"></div>
+    <div class="input-group"><label>Min Accuracy Easy (%)</label><input type="number" id="sg-rhythm-acc-easy" step="1" min="1" max="100"></div>
+    <div class="input-group"><label>Min Accuracy Medium (%)</label><input type="number" id="sg-rhythm-acc-medium" step="1" min="1" max="100"></div>
+    <div class="input-group"><label>Min Accuracy Hard (%)</label><input type="number" id="sg-rhythm-acc-hard" step="1" min="1" max="100"></div>
+
+          <button class="btn-primary" id="save-game-settings-btn" onclick="saveGameSettings()">
+            <span class="btn-text">Save Game Settings</span><span class="btn-spinner"></span>
+          </button>
+        </div>
+        <!-- Game Analytics -->
+        <div id="admin-game-analytics-tab" class="hidden">
+          <button class="btn-primary" id="load-game-analytics-btn" onclick="loadGameAnalytics()">
+            <span class="btn-text">Load Analytics</span><span class="btn-spinner"></span>
+          </button>
+          <div id="game-analytics-content" class="admin-results" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- TASKS TAB -->
+      <div id="admin-taskreviews-tab" class="admin-tab-content hidden">
+        <h3 class="section-subtitle">Post New Task</h3>
+        <form id="admin-task-form" class="auth-form">
+          <div class="input-group"><label>Task Title</label><input type="text" id="task-title" required maxlength="100"></div>
+          <div class="input-group"><label>Description</label><textarea id="task-desc" rows="3" required></textarea></div>
+          <div class="input-group"><label>Proof Instruction</label><input type="text" id="task-proof-inst" placeholder="e.g. Submit your profile link"></div>
+          <div class="input-group"><label>Reward (USDT)</label><input type="number" id="task-reward" step="0.001" min="0.001" required></div>
+          <div class="toggle-row">
+            <span>Flash Task (time-limited, urgent)</span>
+            <label class="switch"><input type="checkbox" id="task-is-flash"><span class="slider"></span></label>
+          </div>
+          <div id="task-expiry-wrap" class="input-group hidden">
+            <label>Expires In (hours)</label>
+            <input type="number" id="task-expiry-hours" min="1" max="24" step="1" placeholder="e.g. 6">
+          </div>
+          <button type="submit" class="btn-primary" id="post-task-btn">
+            <span class="btn-text">Post Task</span><span class="btn-spinner"></span>
+          </button>
+        </form>
+        <h3 class="section-subtitle" style="margin-top:20px;">Active Tasks</h3>
+        <button class="btn-primary" id="load-admin-tasks-btn" onclick="loadAdminTasks()">
+          <span class="btn-text">Refresh Tasks</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-tasks-list" class="admin-results"></div>
+        <h3 class="section-subtitle" style="margin-top:20px;">Pending Submissions</h3>
+        <button class="btn-primary" id="load-submissions-btn" onclick="loadTaskSubmissions()">
+          <span class="btn-text">Refresh</span><span class="btn-spinner"></span>
+        </button>
+        <div id="admin-submissions-list" class="admin-results"></div>
+      </div>
+
+      <!-- ANALYTICS TAB -->
+      <div id="admin-analytics-tab" class="admin-tab-content hidden">
+        <div class="admin-tabs" style="margin-bottom:14px;">
+          <button class="admin-mail-tab-btn active" data-atab="activity" onclick="switchAnalyticsTab('activity')">Activity</button>
+          <button class="admin-mail-tab-btn"         data-atab="revenue"  onclick="switchAnalyticsTab('revenue')">Revenue</button>
+        </div>
+        <div id="analytics-activity-section">
+          <button class="btn-primary" id="load-analytics-btn" onclick="loadAnalytics()">
+            <span class="btn-text">Refresh Stats</span><span class="btn-spinner"></span>
+          </button>
+          <div id="analytics-content" class="admin-results" style="margin-top:12px;"></div>
+        </div>
+        <div id="analytics-revenue-section" class="hidden">
+          <button class="btn-primary" id="load-revenue-btn" onclick="loadRevenueReport()">
+            <span class="btn-text">Refresh Revenue</span><span class="btn-spinner"></span>
+          </button>
+          <div id="revenue-content" class="admin-results" style="margin-top:12px;"></div>
+        </div>
+      </div>
+
+      <!-- FRAUD TAB -->
+      <div id="admin-fraud-tab" class="admin-tab-content hidden">
+        <h3 class="section-subtitle">Flagged / Suspicious Users</h3>
+        <button class="btn-primary" id="load-fraud-btn" onclick="loadFraudUsers()">
+          <span class="btn-text">Refresh List</span><span class="btn-spinner"></span>
+        </button>
+        <div id="fraud-users-list" class="admin-results" style="margin-top:12px;"></div>
+        <h3 class="section-subtitle" style="margin-top:20px;">Manage User Ban / Suspend</h3>
+        <div class="input-group"><label>User UID</label><input type="text" id="ban-uid" placeholder="TGR123456"></div>
+        <div class="input-group"><label>Reason (sent to user)</label><textarea id="ban-reason" rows="2"></textarea></div>
+        <div class="input-group">
+          <label>Duration in Days (leave empty = Permanent)</label>
+          <input type="number" id="ban-duration" min="1" placeholder="e.g. 7">
+        </div>
+        <div class="admin-action-row">
+          <button class="btn-approve" onclick="manageBan('unban')">Unban / Reinstate</button>
+          <button class="btn-reject"  onclick="manageBan('suspend')">Suspend</button>
+          <button class="btn-reject"  onclick="manageBan('ban')" style="background:rgba(239,68,68,0.3);">Ban</button>
+        </div>
+      </div>
+
+    </div><!-- end page-admin -->
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="profile"   onclick="openPage('profile')">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/></svg>
+      <span>Profile</span>
+    </button>
+    <button class="nav-item" data-page="earn"     onclick="openPage('earn')">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 9.5a2.5 2.5 0 012.5-1.5h1a2.5 2.5 0 010 5h-1a2.5 2.5 0 000 5h1a2.5 2.5 0 002.5-1.5"/></svg>
+      <span>Earn</span>
+    </button>
+    <button class="nav-item" data-page="tasks"    onclick="openPage('tasks')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+      <span>Tasks</span>
+    </button>
+    <button class="nav-item" data-page="market"   onclick="openPage('market')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h18M3 9h18M9 9v12M15 9v12M3 21h18"/></svg>
+      <span>Market</span>
+    </button>
+    <button class="nav-item" data-page="luckydraw" onclick="openPage('luckydraw')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+      <span>Draw</span>
+    </button>
+    <button class="nav-item" data-page="games"    onclick="openPage('games')">
+      <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="15" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      <span>Games</span>
+    </button>
+    <button class="nav-item" data-page="rank"     onclick="openPage('rank')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M6 4h12v3a6 6 0 01-12 0V4z"/><path d="M12 13v4M9 21h6"/></svg>
+      <span>Rank</span>
+    </button>
+    <button class="nav-item" data-page="wallet"   onclick="openPage('wallet')">
+      <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="14" r="1.2"/></svg>
+      <span>Wallet</span>
+    </button>
+    <button class="nav-item" data-page="invite"   onclick="openPage('invite')">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M2 20a7 7 0 0114 0"/><circle cx="18" cy="6" r="2.3"/><path d="M16 12a5 5 0 016 4"/></svg>
+      <span>Invite</span>
+    </button>
+    <button class="nav-item" data-page="updates"  onclick="openPage('updates')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2a6 6 0 016 6v3l2 4H4l2-4V8a6 6 0 016-6z"/><path d="M9 21a3 3 0 006 0"/></svg>
+      <span>Updates</span>
+    </button>
+    <button class="nav-item" data-page="help"     onclick="openPage('help')">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 015 .5c0 1.5-2.5 2-2.5 4"/><line x1="12" y1="17" x2="12" y2="17.01"/></svg>
+      <span>Help</span>
+    </button>
+    <button class="nav-item" data-page="guide"    onclick="openPage('guide')">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>Guide</span>
+    </button>
+    <button class="nav-item hidden" id="admin-nav" data-page="admin" onclick="openPage('admin')">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/></svg>
+      <span>Admin</span>
+    </button>
+  </nav>
+
+</div><!-- end app-container -->
+
+   <div id="page-stats" class="page hidden stats-page">
+
+  <div class="stats-back-bar">
+    <button class="stats-back-btn" id="stats-back-btn">
+      <svg class="icon" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </button>
+    <span class="stats-back-title">Platform Statistics</span>
+  </div>
+
+<div id="stats-content-area">
+
+  <!-- HERO -->
+  <div class="stats-hero">
+    <div class="stats-hero-texture"></div>
+    <div class="stats-hero-content">
+      <img src="monogram.png" class="stats-hero-logo" alt="TR">
+      <div class="stats-hero-brand">TIGER REWARDS</div>
+      <div class="stats-hero-tagline" id="stats-tagline">Loading...</div>
+      <div class="stats-hero-subtitle" id="stats-subtitle"></div>
+    </div>
+  </div>
+
+  <!-- LIVE TICKER -->
+  <div class="stats-ticker-wrap" id="stats-ticker-wrap">
+    <div class="stats-ticker-label">
+      <span class="ticker-live-dot"></span>
+      <span>LIVE</span>
+    </div>
+    <div class="stats-ticker-viewport">
+      <div class="stats-ticker-inner" id="stats-ticker-inner"></div>
+    </div>
+  </div>
+
+  <!-- STATS GRID -->
+  <div class="stats-grid-section" id="stats-grid-section">
+    <div class="stats-grid">
+      <div class="stats-card" id="sc1">
+        <div class="stats-card-glow"></div>
+        <div class="stats-number" id="sn1">—</div>
+        <div class="stats-label" id="sl1">Members</div>
+        <div class="stats-live-badge hidden" id="slive1">
+          <span class="slive-dot"></span>LIVE
+        </div>
+      </div>
+      <div class="stats-card" id="sc2">
+        <div class="stats-card-glow"></div>
+        <div class="stats-number" id="sn2">—</div>
+        <div class="stats-label" id="sl2">Paid Out</div>
+        <div class="stats-live-badge hidden" id="slive2">
+          <span class="slive-dot"></span>LIVE
+        </div>
+      </div>
+      <div class="stats-card" id="sc3">
+        <div class="stats-card-glow"></div>
+        <div class="stats-number" id="sn3">—</div>
+        <div class="stats-label" id="sl3">Satisfaction</div>
+      </div>
+      <div class="stats-card" id="sc4">
+        <div class="stats-card-glow"></div>
+        <div class="stats-number" id="sn4">—</div>
+        <div class="stats-label" id="sl4">Ways to Earn</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRUST BADGES -->
+  <div class="stats-badges-section" id="stats-badges-section">
+    <div class="stats-badges-scroll" id="stats-badges-row"></div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="stats-features-section" id="stats-features-section">
+    <div class="stats-features-eyebrow">WHY TIGER REWARDS</div>
+    <div class="stats-features-grid" id="stats-features-grid"></div>
+  </div>
+
+  <!-- CTA (only shown from auth screen) -->
+  <div class="stats-cta-section hidden" id="stats-cta">
+    <button class="stats-cta-join" onclick="hideStatsPage(); switchScreen('register')">
+      🚀 Join Free — It's Quick
+    </button>
+    <button class="stats-cta-signin" onclick="hideStatsPage(); switchScreen('signin')">
+      Sign In
+    </button>
+  </div>
+
+  <div style="height:40px;"></div>
+</div>
+</div>
+
+   <!-- PRIVACY -->
+    <div id="page-privacy" class="page hidden">
+      <h2 class="page-title">Privacy Policy</h2>
+      <div id="privacy-content" class="guide-list"></div>
+    </div>
+
+    <!-- TERMS -->
+    <div id="page-terms" class="page hidden">
+      <h2 class="page-title">Terms & Conditions</h2>
+      <div id="terms-content" class="guide-list"></div>
+    </div>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+<script src="js/supabase-init.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/mailbox.js"></script>
+<script src="js/updates.js"></script>
+<script src="js/wallet.js"></script>
+<script src="js/referral.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/rank.js"></script>
+<script src="js/checkin.js"></script>
+<script src="js/spin.js"></script>
+<script src="js/support.js"></script>
+<script src="js/earn.js"></script>
+<script src="js/tasks.js"></script>
+<script src="js/guide.js"></script>
+<script src="js/legal.js"></script>
+<script src="js/market.js"></script>
+<script src="js/gift.js"></script>
+<script src="js/luckydraw.js"></script>
+<script src="js/games.js"></script>
+<script src="js/assistant.js"></script>
+<script src="js/profile-enhance.js"></script>
+<script src="js/stats.js"></script>
+<script src="js/rhythm.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

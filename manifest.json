@@ -1,0 +1,18 @@
+{
+  "name": "Tiger Rewards",
+  "short_name": "Tiger Rewards",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0a0e17",
+  "theme_color": "#1d2740",
+  "description": "Earn rewards by completing tasks, games, and referrals",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "monogram.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "monogram.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Earn", "url": "./?page=earn", "description": "Complete offers" },
+    { "name": "Games", "url": "./?page=games", "description": "Play games" }
+  ]
+}
